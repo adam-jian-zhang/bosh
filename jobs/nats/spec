@@ -10,7 +10,7 @@ templates:
   nats_server_private_key.erb: config/nats_server_private_key
 
 packages:
-  - gonats
+  - nats
 
 properties:
   nats.listen_address:
@@ -24,7 +24,7 @@ properties:
     default: false
   nats.ping_interval:
     description: Time interval (in seconds) pings from server
-    default: 5
+    default: 5s
   nats.ping_max_outstanding:
     description: Maximum number of pings before declaring a client unresponsive
     default: 2

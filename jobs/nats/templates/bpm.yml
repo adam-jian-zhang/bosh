@@ -2,8 +2,9 @@
 
 nats_config = {
   "name" => "nats",
-  "executable" => "/var/vcap/packages/gonats/bin/gnatsd",
+  "executable" => "/var/vcap/packages/nats/bin/nats-server",
   "args" => ["-c", "/var/vcap/jobs/nats/config/nats.cfg"],
+  "ephemeral_disk" => true,
   "limits" => {
     "open_files" => 65536,
   },

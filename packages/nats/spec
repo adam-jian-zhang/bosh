@@ -1,0 +1,7 @@
+---
+name: nats
+
+dependencies: []
+
+files:
+- nats/nats-server-v2.8.3-linux-amd64.tar.gz
