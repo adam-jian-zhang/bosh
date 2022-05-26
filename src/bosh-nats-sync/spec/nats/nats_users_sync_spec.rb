@@ -40,23 +40,29 @@ module Nats
   }
 ]'
     end
-    let(:instances_json) do
+    let(:vms_json) do
       '[
   {
-    "agent_id": "c5e7c705-459e-41c0-b640-db32d8dc6e71",
-    "cid": "ec974048-3352-4ba4-669d-beab87b16bcb",
-    "job": "example_service",
-    "index": 0,
-    "id": "209b96c8-e482-43c7-9f3e-04de9f93c535",
-    "expects_vm": true
+    "agent_id":"fef068d8-bbdd-46ff-b4a5-bf0838f918d9",
+    "cid":"e975f3e6-a979-40c3-723a-a30817944ae4",
+    "job":"debug",
+    "index":0,
+    "id":"9cb7120d-d817-40f5-9410-d2b6f01ba746",
+    "az":"z1",
+    "ips":[],
+    "vm_created_at":"2022-05-25T20:54:18Z",
+    "active":false
   },
   {
-    "agent_id": null,
-    "cid": null,
-    "job": "example_errand",
-    "index": 0,
-    "id": "548d6aa0-eb8f-4890-bd3a-e6b526f3aeea",
-    "expects_vm": false
+    "agent_id":"c5e7c705-459e-41c0-b640-db32d8dc6e71",
+    "cid":"e975f3e6-a979-40c3-723a-a30817944ae4",
+    "job":"debug",
+    "index":0,
+    "id":"209b96c8-e482-43c7-9f3e-04de9f93c535",
+    "az":"z1",
+    "ips":[],
+    "vm_created_at":"2022-05-25T20:54:18Z",
+    "active":false
   }
 ]'
     end
@@ -64,14 +70,14 @@ module Nats
     describe '#execute_nats_sync' do
       describe 'when there are deployments with running vms in Bosh' do
         before do
-          stub_request(:get, url + '/deployments/deployment-1/instances')
-            .to_return(status: 200, body: instances_json)
+          stub_request(:get, url + '/deployments/deployment-1/vms')
+            .to_return(status: 200, body: vms_json)
           stub_request(:get, url + '/deployments')
             .to_return(status: 200, body: deployments_json)
         end
 
         it 'returns the vms belonging to the deployments' do
-          expect(subject.execute_nats_sync).to eq(%w[209b96c8-e482-43c7-9f3e-04de9f93c535 548d6aa0-eb8f-4890-bd3a-e6b526f3aeea])
+          expect(subject.execute_nats_sync).to eq(%w[fef068d8-bbdd-46ff-b4a5-bf0838f918d9 c5e7c705-459e-41c0-b640-db32d8dc6e71])
         end
       end
     end

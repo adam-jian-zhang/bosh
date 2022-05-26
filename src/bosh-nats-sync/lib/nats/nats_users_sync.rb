@@ -32,8 +32,8 @@ module Nats
     end
 
     def get_vms_by_deployment(deployment)
-      deployments = JSON.parse(call_bosh_api('/deployments/' + deployment + '/instances'))
-      deployments.map { |deployment_obj| deployment_obj['id'] }
+      deployments = JSON.parse(call_bosh_api('/deployments/' + deployment + '/vms'))
+      deployments.map { |deployment_obj| deployment_obj['agent_id'] }
     end
 
     def query_all_running_vms
