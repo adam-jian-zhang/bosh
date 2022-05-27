@@ -1,6 +1,5 @@
 require 'spec_helper'
-require 'nats'
 
-describe Nats do
+describe NATSSync do
   it { should be_a(Module) }
 end

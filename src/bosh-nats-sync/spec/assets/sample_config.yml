@@ -1,0 +1,15 @@
+---
+
+director:
+  api: http://127.0.0.1:25555
+  user: admin
+  password: admin
+
+intervals:
+  poll_user_sync: 1
+
+nats:
+  config_file_path: /tmp/example_file.yml
+
+
+

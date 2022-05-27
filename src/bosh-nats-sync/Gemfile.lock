@@ -8,6 +8,7 @@ GEM
     diff-lcs (1.5.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    eventmachine (1.2.7)
     hashdiff (1.0.1)
     http-accept (1.7.0)
     http-cookie (1.0.5)
@@ -54,6 +55,7 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
+  eventmachine
   pg (~> 1.1)
   rest-client
   rspec (~> 3.4)

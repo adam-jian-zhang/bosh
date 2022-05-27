@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'nats/nats-user-sync'
+
+while true do
+  NatsUserSync.new()
+  sleep(1000)
+end

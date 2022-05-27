@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'nats/nats_users_sync'
+require 'nats_sync/users_sync'
 require 'rest-client'
-require 'nats/bosh_config'
+require 'nats_sync/bosh_config'
 
-module Nats
-  describe NatsUsersSync do
-    subject { NatsUsersSync.new(stdout, nats_config_file_path, bosh_config) }
+module NATSSync
+  describe UsersSync do
+    subject { UsersSync.new(stdout, nats_config_file_path, bosh_config) }
     let(:stdout) { StringIO.new }
     let(:nats_config_file_path) { Tempfile.new('nats_config.json').path }
     let(:bosh_config) { BoshConfig.new(url, user, password) }
@@ -77,7 +77,7 @@ module Nats
           stub_request(:get, url + '/deployments')
             .with(basic_auth: [user, password])
             .to_return(status: 200, body: deployments_json)
-          subject.execute_nats_sync
+          subject.execute_users_sync
         end
 
         it 'should write the right number of users to the NATs configuration file in the given path' do

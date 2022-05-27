@@ -1,20 +1,20 @@
 require 'rest-client'
 require 'base64'
-require 'nats/nats_auth_config'
+require 'nats_sync/nats_auth_config'
 
-module Nats
-  class NatsUsersSync
-    def initialize(stdout, nats_config_file_path, bosh_config)
+module NATSSync
+  class UsersSync
+    def initialize(stdout, users_conf_file_path, bosh_config)
       @stdout = stdout
-      @nats_config_file_path = nats_config_file_path
+      @nats_config_file_path = users_conf_file_path
       @bosh_config = bosh_config
     end
 
-    def execute_nats_sync
-      @stdout.puts 'Executing NATS Synchronization'
+    def execute_users_sync
+      @stdout.puts 'Executing NATS Users Synchronization'
       vms_uuids = query_all_running_vms
       write_nats_config_file(vms_uuids)
-      @stdout.puts 'Finishing NATS Synchronization'
+      @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end
 

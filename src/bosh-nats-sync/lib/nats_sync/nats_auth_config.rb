@@ -1,9 +1,9 @@
-module Nats
+module NATSSync
   class NatsAuthConfig
     def initialize(agent_ids)
       @agent_ids = agent_ids
       @config = { "authorization" =>
-                    {"users" => [] } }
+                    { "users" => [] } }
     end
 
     def director_user
@@ -11,7 +11,7 @@ module Nats
         "user" => "C=USA, O=Cloud Foundry, CN=default.director.bosh-internal",
         "permissions" => {
           "publish" => %w[ "agent.*","hm.director.alert" ],
-          "subscribe" => [ "director.>" ]
+          "subscribe" => ["director.>"]
         }
       }
     end
@@ -42,7 +42,7 @@ module Nats
             "director.*.#{agent_id}.*",
           ]
         },
-        "subscribe": [ "agent.#{agent_id}" ]
+        "subscribe": ["agent.#{agent_id}"]
       }
     end
 
