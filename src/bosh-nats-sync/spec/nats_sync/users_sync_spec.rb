@@ -8,7 +8,7 @@ module NATSSync
     subject { UsersSync.new(stdout, nats_config_file_path, bosh_config, nats_executable) }
     let(:stdout) { StringIO.new }
     let(:nats_config_file_path) { Tempfile.new('nats_config.json').path }
-    let(:nats_executable) {'/var/vcap/packages/nats/bin/nats-server'}
+    let(:nats_executable) { '/var/vcap/packages/nats/bin/nats-server' }
     let(:bosh_config) { BoshConfig.new(url, user, password) }
     let(:url) { 'http://127.0.0.1:25555' }
     let(:user) { 'admin' }
