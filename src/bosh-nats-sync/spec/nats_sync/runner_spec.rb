@@ -8,7 +8,8 @@ describe NATSSync::Runner do
 
   describe 'when the runner is created with the sample config file' do
     let(:bosh_config) { NATSSync::BoshConfig.new('http://127.0.0.1:25555', 'admin', 'admin') }
-    let(:file_path) { '/tmp/example_file.yml' }
+    let(:file_path) { '/var/vcap/data/nats/auth.json' }
+    let(:nats_server_executable) { '/var/vcap/packages/nats/bin/nats-server' }
     before do
       allow(user_sync_instance).to receive(:execute_users_sync)
       allow(user_sync_class).to receive(:new).and_return(user_sync_instance)
@@ -19,7 +20,7 @@ describe NATSSync::Runner do
     end
 
     it 'should start UsersSync.execute_nats_sync function with the same parameters defined in the file' do
-      expect(user_sync_class).to have_received(:new).with(stdout, file_path, bosh_config)
+      expect(user_sync_class).to have_received(:new).with(stdout, file_path, bosh_config, nats_server_executable)
       expect(user_sync_instance).to have_received(:execute_users_sync)
     end
 

@@ -9,7 +9,8 @@ intervals:
   poll_user_sync: 1
 
 nats:
-  config_file_path: /tmp/example_file.yml
+  config_file_path: /var/vcap/data/nats/auth.json
+  nats_server_executable: /var/vcap/packages/nats/bin/nats-server
 
 
 
