@@ -1,0 +1,22 @@
+<%=
+
+director = {
+  'api' => "https://#{p('director.address')}:#{p('director.port')}",
+  'user' => p('nats.director_account.user'),
+  'password' => p('nats.director_account.password'),
+}
+
+params = {
+  'director' => director,
+  'intervals' => {
+    'poll_user_sync' => p('nats-sync.intervals.poll_director'),
+  },
+  'nats' => {
+    'config_file_path' => '/var/vcap/data/nats/auth.json',
+    'nats_server_executable' => '/var/vcap/packages/nats/bin/nats-server',
+  }
+}
+
+JSON.dump(params)
+
+%>

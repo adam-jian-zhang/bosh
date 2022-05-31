@@ -4,7 +4,7 @@ require 'nats_sync/nats_auth_config'
 
 module NATSSync
   class UsersSync
-    def initialize(stdout, users_conf_file_path, bosh_config)
+    def initialize(stdout, users_conf_file_path, bosh_config, nats_server_executable)
       @stdout = stdout
       @nats_config_file_path = users_conf_file_path
       @bosh_config = bosh_config
@@ -14,6 +14,7 @@ module NATSSync
       @stdout.puts 'Executing NATS Users Synchronization'
       vms_uuids = query_all_running_vms
       write_nats_config_file(vms_uuids)
+      system("#{nats_server_executable} --signal reload")
       @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end

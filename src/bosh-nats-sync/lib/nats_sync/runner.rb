@@ -8,6 +8,7 @@ module NATSSync
       @bosh_config = BoshConfig.new(director_config['api'], director_config['user'], director_config['password'])
       @poll_user_sync = config['intervals']['poll_user_sync']
       @nats_config_file_path = config['nats']['config_file_path']
+      @nats_server_executable = config['nats']['nats_server_executable']
       # TODO: remove this and use a logger
       @stdout = stdout
     end
@@ -33,7 +34,7 @@ module NATSSync
     end
 
     def sync_nats_users
-      UsersSync.new(@stdout, @nats_config_file_path, @bosh_config).execute_users_sync
+      UsersSync.new(@stdout, @nats_config_file_path, @bosh_config, @nats_server_executable).execute_users_sync
     end
 
     def handle_em_error(err)

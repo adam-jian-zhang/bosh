@@ -1,5 +1,31 @@
 <%=
 
+bosh_nats_sync_config = {
+  "name" => "bosh_nats_sync",
+  "executable" => "/var/vcap/jobs/nats/bin/bosh_nats_sync",
+  "env" => {
+    "BUNDLE_GEMFILE" => "/var/vcap/packages/nats/Gemfile",
+    "GEM_HOME" => "/var/vcap/packages/nats/gem_home/ruby/3.1.0",
+  },
+  "unsafe" => {
+    "unrestricted_volumes" => [
+    {
+      # contains the symlinks to the actual jobs under /var/vcap/data/jobs/[name]/[sha]/...
+      # without this we don't know which "version" of a job to use
+      "path" => "/var/vcap/jobs",
+    },
+    {
+      "path" => "/var/vcap/data/jobs/*/*/bin/bosh-nats-sync",
+      "allow_executions" => true,
+    },
+    {
+      "path" => "/var/vcap/sys/log",
+      "writable" => true,
+      "mount_only" => true
+    }]
+  },
+}
+
 nats_config = {
   "name" => "nats",
   "executable" => "/var/vcap/packages/nats/bin/nats-server",
@@ -11,7 +37,7 @@ nats_config = {
 }
 
 config = {
-  "processes" => [nats_config],
+  "processes" => [nats_config, bosh_nats_sync_config],
 }
 
 YAML.dump(config)
