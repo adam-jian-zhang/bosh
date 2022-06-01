@@ -4,9 +4,9 @@ require 'nats_sync/nats_auth_config'
 
 module NATSSync
   class UsersSync
-    def initialize(stdout, users_conf_file_path, bosh_config, nats_executable)
+    def initialize(stdout, nats_config_file_path, bosh_config, nats_executable)
       @stdout = stdout
-      @nats_config_file_path = users_conf_file_path
+      @nats_config_file_path = nats_config_file_path
       @bosh_config = bosh_config
       @nats_executable = nats_executable
     end
@@ -14,13 +14,19 @@ module NATSSync
     def execute_users_sync
       @stdout.puts 'Executing NATS Users Synchronization'
       vms_uuids = query_all_running_vms
+      current_file_hash = nats_file_hash
       write_nats_config_file(vms_uuids)
-      system("#{@nats_executable} --signal reload")
+      new_file_hash = nats_file_hash
+      Kernel.system("#{@nats_executable} --signal reload") unless current_file_hash == new_file_hash
       @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end
 
     private
+
+    def nats_file_hash
+      Digest::MD5.file(@nats_config_file_path).hexdigest
+    end
 
     def call_bosh_api(endpoint)
       response = RestClient.get @bosh_config.url + endpoint, 'Authorization' => encode_basic_authentication
