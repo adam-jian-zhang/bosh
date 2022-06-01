@@ -69,6 +69,6 @@ properties:
     description: Password to access Bosh Director
     default: ''
 
-  nats-sync.intervals.poll_director:
+  nats-sync.intervals.poll_user_sync:
     description: Interval (in seconds) to get the list of managed VMs from Bosh Director
     default: 10

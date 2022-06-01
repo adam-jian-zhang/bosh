@@ -4,11 +4,11 @@ require 'nats_sync/nats_auth_config'
 
 module NATSSync
   class UsersSync
-    def initialize(stdout, nats_config_file_path, bosh_config, nats_executable)
+    def initialize(stdout, nats_config_file_path, bosh_config, nats_pid_path)
       @stdout = stdout
       @nats_config_file_path = nats_config_file_path
       @bosh_config = bosh_config
-      @nats_executable = nats_executable
+      @nats_pid_path = nats_pid_path
     end
 
     def execute_users_sync
@@ -29,7 +29,13 @@ module NATSSync
     end
 
     def call_bosh_api(endpoint)
-      response = RestClient.get @bosh_config.url + endpoint, 'Authorization' => encode_basic_authentication
+      response = RestClient::Request.execute(
+        :url => @bosh_config.url + endpoint, 
+        :method => :get, 
+        :headers => {'Authorization' => encode_basic_authentication},
+        :verify_ssl => false
+      )
+      
       raise("Cannot access: #{endpoint}, Status Code: #{response.code}, #{response.body}") unless response.code == 200
 
       response.body

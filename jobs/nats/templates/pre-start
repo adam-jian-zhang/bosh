@@ -9,3 +9,5 @@
 if [ ! -f /var/vcap/data/nats/auth.json ]; then
    echo "{}" > /var/vcap/data/nats/auth.json
 fi
+
+chown vcap:vcap /var/vcap/data/nats/auth.json

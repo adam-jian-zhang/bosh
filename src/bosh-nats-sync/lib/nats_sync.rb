@@ -9,3 +9,5 @@ require 'nats_sync/bosh_config'
 require 'nats_sync/nats_auth_config'
 
 require 'eventmachine'
+require 'json'
+require 'yaml'

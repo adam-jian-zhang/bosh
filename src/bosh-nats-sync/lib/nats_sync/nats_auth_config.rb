@@ -10,7 +10,7 @@ module NATSSync
       {
         "user" => "C=USA, O=Cloud Foundry, CN=default.director.bosh-internal",
         "permissions" => {
-          "publish" => %w[ "agent.*","hm.director.alert" ],
+          "publish" => [ "agent.*","hm.director.alert" ],
           "subscribe" => ["director.>"]
         }
       }
@@ -21,7 +21,7 @@ module NATSSync
         "user" => "C=USA, O=Cloud Foundry, CN=default.hm.bosh-internal",
         "permissions" => {
           "publish" => [],
-          "subscribe" => %w[
+          "subscribe" => [
             "hm.agent.heartbeat.*",
             "hm.agent.alert.*",
             "hm.agent.shutdown.*",

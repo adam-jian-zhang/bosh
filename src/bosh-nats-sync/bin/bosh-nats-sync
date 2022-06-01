@@ -18,7 +18,7 @@ if config_file.nil?
   exit 1
 end
 
-runner = NATSSync::Runner.new(config_file)
+runner = NATSSync::Runner.new(config_file, STDOUT)
 
 Signal.trap('INT') do
   runner.stop
