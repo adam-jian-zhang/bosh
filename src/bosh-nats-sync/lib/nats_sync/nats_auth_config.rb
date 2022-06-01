@@ -40,9 +40,9 @@ module NATSSync
             "hm.agent.alert.#{agent_id}",
             "hm.agent.shutdown.#{agent_id}",
             "director.*.#{agent_id}.*",
-          ]
+          ],
+          "subscribe": ["agent.#{agent_id}"]
         },
-        "subscribe": ["agent.#{agent_id}"]
       }
     end
 
