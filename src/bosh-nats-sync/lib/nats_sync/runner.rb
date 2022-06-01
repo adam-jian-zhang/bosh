@@ -18,6 +18,7 @@ module NATSSync
       EM.error_handler { |e| handle_em_error(e) }
       EM.run do
         setup_timers
+        sync_nats_users
       end
     end
 

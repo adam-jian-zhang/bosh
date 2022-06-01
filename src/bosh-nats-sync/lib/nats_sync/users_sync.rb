@@ -4,11 +4,11 @@ require 'nats_sync/nats_auth_config'
 
 module NATSSync
   class UsersSync
-    def initialize(stdout, nats_config_file_path, bosh_config, nats_pid_path)
+    def initialize(stdout, nats_config_file_path, bosh_config, nats_server_executable)
       @stdout = stdout
       @nats_config_file_path = nats_config_file_path
       @bosh_config = bosh_config
-      @nats_pid_path = nats_pid_path
+      @nats_server_executable = nats_server_executable
     end
 
     def execute_users_sync
@@ -17,7 +17,7 @@ module NATSSync
       current_file_hash = nats_file_hash
       write_nats_config_file(vms_uuids)
       new_file_hash = nats_file_hash
-      Kernel.system("#{@nats_executable} --signal reload") unless current_file_hash == new_file_hash
+      Kernel.system("#{@nats_server_executable} --signal reload") unless current_file_hash == new_file_hash
       @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end
