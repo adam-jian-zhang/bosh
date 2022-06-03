@@ -10,6 +10,7 @@ templates:
   nats_server_private_key.erb: config/nats_server_private_key
   bosh_nats_sync: bin/bosh_nats_sync
   bosh_nats_sync_config.yml.erb: config/bosh_nats_sync_config.yml
+  uaa.pem.erb: config/uaa.pem
 
 packages:
   - nats
@@ -67,6 +68,15 @@ properties:
     default: ''
   nats.director_account.password:
     description: Password to access Bosh Director
+    default: ''
+  nats.director_account.client_id:
+    description: UAA client id to access Bosh Director
+    default: ''
+  nats.director_account.client_secret:
+    description: UAA client secret to access Bosh Director
+    default: ''
+  nats.director_account.ca_cert:
+    description: Certificate to verify UAA endpoint
     default: ''
 
   nats-sync.intervals.poll_user_sync:

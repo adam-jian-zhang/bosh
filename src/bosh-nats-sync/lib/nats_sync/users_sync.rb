@@ -4,20 +4,16 @@ require 'nats_sync/nats_auth_config'
 
 module NATSSync
   class UsersSync
-    def initialize(stdout, nats_config_file_path, bosh_config, nats_server_executable)
+    def initialize(stdout, nats_config_file_path, bosh_config)
       @stdout = stdout
       @nats_config_file_path = nats_config_file_path
       @bosh_config = bosh_config
-      @nats_server_executable = nats_server_executable
     end
 
     def execute_users_sync
       @stdout.puts 'Executing NATS Users Synchronization'
       vms_uuids = query_all_running_vms
-      current_file_hash = nats_file_hash
       write_nats_config_file(vms_uuids)
-      new_file_hash = nats_file_hash
-      Kernel.system("#{@nats_server_executable} --signal reload") unless current_file_hash == new_file_hash
       @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end
@@ -30,12 +26,12 @@ module NATSSync
 
     def call_bosh_api(endpoint)
       response = RestClient::Request.execute(
-        :url => @bosh_config.url + endpoint, 
-        :method => :get, 
-        :headers => {'Authorization' => encode_basic_authentication},
-        :verify_ssl => false
+        url: @bosh_config['url'] + endpoint,
+        method: :get,
+        headers: { 'Authorization' => create_authentication_header },
+        verify_ssl: false,
       )
-      
+      puts response.inspect
       raise("Cannot access: #{endpoint}, Status Code: #{response.code}, #{response.body}") unless response.code == 200
 
       response.body
@@ -58,8 +54,26 @@ module NATSSync
       vms_uuids
     end
 
-    def encode_basic_authentication
-      "Basic #{Base64.encode64("#{@bosh_config.user}:#{@bosh_config.password}")}"
+    def call_bosh_api_no_auth(endpoint)
+      response = RestClient::Request.execute(
+        url: @bosh_config['url'] + endpoint,
+        method: :get,
+        verify_ssl: false,
+      )
+      puts response.inspect
+      raise("Cannot access: #{endpoint}, Status Code: #{response.code}, #{response.body}") unless response.code == 200
+
+      response.body
+    end
+
+    def info
+      body = call_bosh_api_no_auth('/info')
+
+      JSON.parse(body)
+    end
+
+    def create_authentication_header
+      NATSSync::AuthProvider.new(info, @bosh_config).auth_header
     end
 
     def write_nats_config_file(vms_uuids)

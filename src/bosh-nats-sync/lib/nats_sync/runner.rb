@@ -4,11 +4,9 @@ module NATSSync
 
     def initialize(config_file, stdout)
       config = load_yaml_file(config_file)
-      director_config = config['director']
-      @bosh_config = BoshConfig.new(director_config['api'], director_config['user'], director_config['password'])
+      @bosh_config = config['director']
       @poll_user_sync = config['intervals']['poll_user_sync']
       @nats_config_file_path = config['nats']['config_file_path']
-      @nats_server_executable = config['nats']['nats_server_executable']
       # TODO: remove this and use a logger
       @stdout = stdout
     end
@@ -18,7 +16,6 @@ module NATSSync
       EM.error_handler { |e| handle_em_error(e) }
       EM.run do
         setup_timers
-        sync_nats_users
       end
     end
 
@@ -35,7 +32,7 @@ module NATSSync
     end
 
     def sync_nats_users
-      UsersSync.new(@stdout, @nats_config_file_path, @bosh_config, @nats_server_executable).execute_users_sync
+      UsersSync.new(@stdout, @nats_config_file_path, @bosh_config).execute_users_sync
     end
 
     def handle_em_error(err)

@@ -1,9 +1,12 @@
 <%=
 
 director = {
-  'api' => "https://#{p('director.address')}:#{p('director.port')}",
+  'url' => "https://#{p('director.address')}:#{p('director.port')}",
   'user' => p('nats.director_account.user'),
   'password' => p('nats.director_account.password'),
+  'client_id' => p('nats.director_account.client_id'),
+  'client_secret' => p('nats.director_account.client_secret'),
+  'ca_cert' => '/var/vcap/jobs/nats/config/uaa.pem',
 }
 
 params = {
@@ -13,10 +16,9 @@ params = {
   },
   'nats' => {
     'config_file_path' => '/var/vcap/data/nats/auth.json',
-    'nats_server_executable' => '/var/vcap/packages/nats/bin/nats-server',
   }
 }
 
-JSON.dump(params)
+YAML.dump(params)
 
 %>

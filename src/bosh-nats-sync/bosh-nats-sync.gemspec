@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.version      = NATSSync::VERSION
   spec.platform     = Gem::Platform::RUBY
   spec.summary      = 'BOSH Nats Sync'
-  spec.description  = "BOSH Nats Sync"
+  spec.description  = 'BOSH Nats Sync'
   spec.author       = 'VMware'
   spec.homepage     = 'https://github.com/cloudfoundry/bosh'
   spec.license      = 'Apache 2.0'
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.bindir       = 'bin'
   spec.executables << 'bosh-nats-sync'
 
+  spec.add_dependency 'cf-uaa-lib',  '~>3.2.1'
   spec.add_dependency 'eventmachine',    '~>1.3.0.dev.1'
   spec.add_dependency 'logging',         '~>2.2.2'
   spec.add_dependency 'em-http-request'
