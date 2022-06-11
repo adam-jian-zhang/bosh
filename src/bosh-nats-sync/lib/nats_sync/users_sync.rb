@@ -13,12 +13,20 @@ module NATSSync
     def execute_users_sync
       @stdout.puts 'Executing NATS Users Synchronization'
       vms_uuids = query_all_running_vms
-      write_nats_config_file(vms_uuids)
+      write_nats_config_file(vms_uuids, read_subject_file(@bosh_config['director_subject_file']),
+                             read_subject_file(@bosh_config['hm_subject_file']))
       @stdout.puts 'Finishing NATS Users Synchronization'
       vms_uuids
     end
 
     private
+
+    def read_subject_file(file_path)
+      return nil unless File.exist?(file_path)
+      return nil if File.empty?(file_path)
+
+      File.read(file_path)
+    end
 
     def nats_file_hash
       Digest::MD5.file(@nats_config_file_path).hexdigest
@@ -76,9 +84,9 @@ module NATSSync
       NATSSync::AuthProvider.new(info, @bosh_config).auth_header
     end
 
-    def write_nats_config_file(vms_uuids)
+    def write_nats_config_file(vms_uuids, director_subject, hm_subject)
       File.open(@nats_config_file_path, 'w') do |f|
-        f.write(JSON.unparse(NatsAuthConfig.new(vms_uuids).create_config))
+        f.write(JSON.unparse(NatsAuthConfig.new(vms_uuids, director_subject, hm_subject).create_config))
       end
     end
   end

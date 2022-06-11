@@ -8,8 +8,14 @@ module NATSSync
     let(:stdout) { StringIO.new }
     let(:nats_config_file_path) { Tempfile.new('nats_config.json').path }
     let(:bosh_config) do
-      { 'url' => url, 'user' => user, 'password' => password, 'client_id' => client_id,
-        'client_secret' => client_secret, 'ca_cert' => ca_cert }
+      { 'url' => url,
+        'user' => user,
+        'password' => password,
+        'client_id' => client_id,
+        'client_secret' => client_secret,
+        'ca_cert' => ca_cert,
+        'director_subject_file' => director_subject_file,
+        'hm_subject_file' => hm_subject_file }
     end
     let(:url) { 'http://127.0.0.1:25555' }
     let(:user) { 'admin' }
@@ -17,7 +23,11 @@ module NATSSync
     let(:client_id) { 'client_id' }
     let(:client_secret) { 'client_secret' }
     let(:ca_cert) { 'ca_cert' }
-    let(:ldap_user_name_base) { 'C=USA, O=Cloud Foundry, CN=%s.bosh-internal' }
+    let(:director_subject_file) { sample_director_subject }
+    let(:hm_subject_file) { sample_hm_subject }
+    let(:director_subject) { 'C = USA, O = Pivotal, CN = default.director.bosh-internal' }
+    let(:hm_subject) { 'C = USA, O = Cloud Foundry, CN = default.hm.bosh-internal' }
+    let(:bosh_vms_subject) { 'C=USA, O=Cloud Foundry, CN=%s.bosh-internal' }
     let(:auth_provider) { class_double('NATSSync::AuthProvider').as_stubbed_const }
     let(:auth_provider_double) { instance_double(NATSSync::AuthProvider) }
     let(:deployments_json) do
@@ -138,9 +148,9 @@ module NATSSync
           file = File.read(nats_config_file_path)
           data_hash = JSON.parse(file)
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'default.director')))
+            .to include(include('user' => director_subject))
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'default.hm')))
+            .to include(include('user' => hm_subject))
           expect(data_hash['authorization']['users'].length).to eq(2)
         end
       end
@@ -168,13 +178,13 @@ module NATSSync
           file = File.read(nats_config_file_path)
           data_hash = JSON.parse(file)
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'default.director')))
+            .to include(include('user' => director_subject))
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'default.hm')))
+            .to include(include('user' => hm_subject))
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'fef068d8-bbdd-46ff-b4a5-bf0838f918d9.agent')))
+            .to include(include('user' => format(bosh_vms_subject, 'fef068d8-bbdd-46ff-b4a5-bf0838f918d9.agent')))
           expect(data_hash['authorization']['users'])
-            .to include(include('user' => format(ldap_user_name_base, 'c5e7c705-459e-41c0-b640-db32d8dc6e71.agent')))
+            .to include(include('user' => format(bosh_vms_subject, 'c5e7c705-459e-41c0-b640-db32d8dc6e71.agent')))
         end
 
         it 'should not write the wrong ids to the NATs configuration file in the given path' do
@@ -182,15 +192,31 @@ module NATSSync
           file = File.read(nats_config_file_path)
           data_hash = JSON.parse(file)
           expect(data_hash['authorization']['users'])
-            .not_to include(include('user' => format(ldap_user_name_base, '9cb7120d-d817-40f5-9410-d2b6f01ba746.agent')))
+            .not_to include(include('user' => format(bosh_vms_subject, '9cb7120d-d817-40f5-9410-d2b6f01ba746.agent')))
           expect(data_hash['authorization']['users'])
-            .not_to include(include('user' => format(ldap_user_name_base, '209b96c8-e482-43c7-9f3e-04de9f93c535.agent')))
+            .not_to include(include('user' => format(bosh_vms_subject, '209b96c8-e482-43c7-9f3e-04de9f93c535.agent')))
         end
-      end
 
-      def write_config_file(vms_uuids)
-        File.open(nats_config_file_path, 'w') do |f|
-          f.write(JSON.unparse(NatsAuthConfig.new(vms_uuids).create_config))
+        describe 'when there are running vms in Bosh and there are is no subject information for hm or the director' do
+          let(:director_subject_file) { '/file/nonexistent1' }
+          let(:hm_subject_file) { '/file/nonexistent2' }
+
+          it 'should write the right number of users to the NATs configuration file in the given path' do
+            subject.execute_users_sync
+            file = File.read(nats_config_file_path)
+            data_hash = JSON.parse(file)
+            expect(data_hash['authorization']['users'].length).to eq(2)
+          end
+
+          it 'should not write the configuration for the bosh director or the bosh monitor' do
+            subject.execute_users_sync
+            file = File.read(nats_config_file_path)
+            data_hash = JSON.parse(file)
+            expect(data_hash['authorization']['users'])
+              .not_to include(include('user' => hm_subject))
+            expect(data_hash['authorization']['users'])
+              .not_to include(include('user' => director_subject))
+          end
         end
       end
     end

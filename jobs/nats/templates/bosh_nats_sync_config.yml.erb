@@ -7,6 +7,8 @@ director = {
   'client_id' => p('nats.director_account.client_id'),
   'client_secret' => p('nats.director_account.client_secret'),
   'ca_cert' => '/var/vcap/jobs/nats/config/uaa.pem',
+  'director_subject_file' => '/var/vcap/data/nats/director-subject',
+  'hm_subject_file' => '/var/vcap/data/nats/hm-subject',
 }
 
 params = {

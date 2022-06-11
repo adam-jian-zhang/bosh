@@ -11,3 +11,7 @@ if [ ! -f /var/vcap/data/nats/auth.json ]; then
 fi
 
 chown vcap:vcap /var/vcap/data/nats/auth.json
+
+/usr/bin/openssl x509 -in /var/vcap/jobs/nats/config/nats_director_client_certificate.pem -noout -subject | cut -b 9- > /var/vcap/data/nats/director-subject
+
+/usr/bin/openssl x509 -in /var/vcap/jobs/nats/config/nats_hm_client_certificate.pem -noout -subject | cut -b 9- > /var/vcap/data/nats/hm-subject
