@@ -25,7 +25,7 @@ module NATSSync
       return nil unless File.exist?(file_path)
       return nil if File.empty?(file_path)
 
-      File.read(file_path)
+      File.read(file_path).strip
     end
 
     def nats_file_hash
