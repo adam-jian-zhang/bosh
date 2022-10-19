@@ -2,7 +2,8 @@
 name: nats
 
 dependencies:
-- ruby-3.1
+- ruby-clang-3.1
+- clang
 
 files:
 - nats/nats-server-v*-linux-amd64.tar.gz

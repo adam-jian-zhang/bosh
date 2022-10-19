@@ -1,0 +1,4 @@
+name: ruby-clang-3.1
+fingerprint: 1ba37839e648531ddb892a507def3f8af05f704ad9a303fe8b62d6ed45d52bb3
+dependencies:
+- clang
